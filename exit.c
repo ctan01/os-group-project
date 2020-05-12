@@ -1,19 +1,57 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <pwd.h>
+#include <grp.h>
+#include <time.h>
+#include <string.h>
+#include <sys/wait.h>
 
-int main(int argc, char *argv[]){
-	// print last 4 commmands
-		printf("\nargument: %s, %s, %s", argv[0], argv[1], argv[2]);
-   	printf("\n Last four commands : ");
+void printLastFourCommands(int argc, char *argv[])
+{
+	int count = 0;
+	for (int i = argc - 2; i >= 0; i--) {
+		if (count < 4) {
+			printf("%s\n", argv[i]);
+			++count;
+		}
+		else {
+			break;
+		}
+	}
+}
 
-   	system("history 4");
-   		
-   	printf("\n");
-  
+void terminate(){
+	printf("\n press return key to terminate shell \n");
+
+	while(1){
+		char c = getchar();
+		if(c == '\n'){
+			break;
+		}
+
+	}
+
+	pid_t parent = getppid();
+	kill(parent,2);
+}
+
+
+
+int main(int argc, char* argv[]){
+
+	printf("\n Last 4 commands : \n");
+
+	printLastFourCommands(argc, argv);
+
 	//list all content in current directory
-	printf("\n List of content in cur dir : ");
 
 	system("ls -l");
+
+	terminate();
 
 	return 0;
 }
